@@ -2,8 +2,4 @@
 #modify /etc/apt/sources.list to remove CD list
 #allow Root Login in SSH: 'PermitRootLogin yes'
 
-copy public key 
-
-
-"ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCjSm2lkO6kMUxSh+N8wrQom6piK+kDrNeDTgmpr48TcI6gJgKtC1asfW5xkEQ+Dk2oTOhfmEKwwmNAHTf1qsoxQqrf/QHo4n3scFSlg76elQR1JgWdFhyj6fYHVE1J8jgPjVP72B707CvJApoW5bnIemrdHj6P2UCP0GOgWalDMbkWpparw6g4IqwkFJteuq0khx660/+Ndp21EpptbMH/wWzUVsFzcaPbIw43YAhbN3qhN9XwahVgwudz9p8UUs9Eu/D61Hz1Fq0wN7DslBsBsAU0SwGlJktZskIo350ffgPSJEbuzyFr72lOGpR37Y4QU8suY4d+fCHtqKKly5yz vcn@vcn-OptiPlex-755"
-
+# using "echo" to input public key was not successful through preseed, used wget instead
