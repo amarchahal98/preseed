@@ -1,0 +1,79 @@
+---
+- hosts: target
+  tasks:
+  - name: configure interface file
+    copy:
+       src: ./interfaces
+       dest: /etc/network/interfaces
+       owner: root
+       group: root
+       mode: u=rw,g=r,o=r
+  
+  - name: add line to apt sources.list
+    lineinfile:
+      dest: /etc/apt/sources.list
+      line: "deb http://ftp.debian.org/debian jessie-backports main"
+
+  - name: Update and Upgrade all packages to the latest version
+    apt:
+      upgrade: dist
+      update_cache: yes
+
+  - name: Install Required packages
+    apt:
+      name: "{{ item }}"
+      state: latest
+    with_items:
+      - screen
+      - vim
+      - drbd-utils
+      - ganeti-instance-debootstrap
+      - qemu-kvm
+      - ethtool
+      - ntp
+      - openvswitch-switch
+      - ganeti
+
+  - apt:
+      name: ganeti
+      state: present
+      default_release: "{{ansible_distribution_release}}-backports"
+
+  - name: ensure drbd.conf exists
+    copy:
+      content: ""
+      dest: /etc/modprobe.d/drbd.conf
+      force: no
+      group: root
+      owner: root
+      mode: 644
+
+  - name: add line to drbd.conf
+    lineinfile:
+      dest: /etc/modprobe.d/drbd.conf
+      line: 'options drbd minor_count=128 usermode_helper=/bin/true'
+
+  - name: add line to /etc/modules
+    lineinfile:
+      dest: /etc/modules
+      line: 'drbd'
+
+  - name: Probing all modules
+    command: "/sbin/depmod -a"
+
+  - name: Add DRBD Module
+    command: "/sbin/modprobe drbd"
+
+  - name: remove apt dependancies # APT Module gives error, using command directly instead
+    command: apt-get autoremove
+
+  - name: copy restart bridge script
+    copy:
+       src: ./restartbridge.sh
+       dest: /root/
+
+  - name: Execute restart bridge script
+    command: bash /root/restartbridge.sh
+    ignore_errors: yes
+
+...

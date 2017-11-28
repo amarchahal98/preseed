@@ -1,0 +1,7 @@
+host target
+        Hostname 192.168.20.186
+        ForwardAgent yes
+        IdentityFile ~/.ssh/id_rsa
+        User root
+        StrictHostKeyChecking no
+        UserKnownHostsFile=/dev/null
