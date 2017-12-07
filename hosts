@@ -1,2 +1,3 @@
 [target]
-target
+192.168.20.179 ansible_ssh_user=root
+
