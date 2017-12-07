@@ -1,3 +1,2 @@
 [target]
-192.168.20.179 ansible_ssh_user=root
-
+192.168.20.65 ansible_ssh_user=root ANSIBLE_HOST_KEY_CHECKING=False
