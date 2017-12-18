@@ -8,7 +8,7 @@
        owner: root
        group: root
        mode: u=rw,g=r,o=r
-  
+
   - name: add line to apt sources.list
     lineinfile:
       dest: /etc/apt/sources.list
@@ -34,10 +34,13 @@
       - openvswitch-switch
       - ganeti
 
-  - apt:
+  - name: install ganeti from backports
+    apt:
       name: ganeti
-      state: present
-      default_release: "{{ansible_distribution_release}}-backports"
+      state: latest
+      default_release: jessie-backports
+    tags:
+      - run
 
   - name: ensure drbd.conf exists
     copy:
@@ -64,16 +67,37 @@
   - name: Add DRBD Module
     command: "/sbin/modprobe drbd"
 
+  - name: Restart lvm2
+    service:
+      name: lvm2
+      state: restarted
+
+  - name: Creating SymLinks for kernel images
+    file:
+      src: "{{ item.path }}"
+      dest: "{{ item.dest }}"
+      state: link
+    with_items:
+      - { path: '/boot/vmlinuz-3.16.0-4-amd64', dest: '/boot/vmlinuz-3-kvmU' }
+      - { path: '/boot/initrd.img-3.16.0-4-amd64', dest: '/boot/initrd-3-kvmU' }
+
   - name: remove apt dependancies # APT Module gives error, using command directly instead
-    command: apt-get autoremove
+    command: apt-get autoremove -y
 
-  - name: copy restart bridge script
+
+  - name: copy interfaces file modification script to remote server
     copy:
-       src: ./restartbridge.sh
-       dest: /root/
+       src: ./modinterfaces.sh
+       dest: /root/modinterfaces.sh
+       owner: root
+       group: root
+       mode: u=rw,g=r,o=r
 
-  - name: Execute restart bridge script
-    command: bash /root/restartbridge.sh
-    ignore_errors: yes
+  - name: execute interfaces modification script
+    command: "bash /root/modinterfaces.sh"
+
+  - name: restart machine
+    command: reboot
+
 
 ...

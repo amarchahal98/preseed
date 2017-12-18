@@ -1,5 +1,0 @@
-#install ssh
-#modify /etc/apt/sources.list to remove CD list
-#allow Root Login in SSH: 'PermitRootLogin yes'
-
-# using "echo" to input public key was not successful through preseed, used wget instead
